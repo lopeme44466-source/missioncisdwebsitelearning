@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build",
+    "build": "vite build && mkdir -p assets docs && cp -r dist/assets/* assets/ && cp -r dist/* docs/",
     "start": "tsx server.ts",
     "lint": "tsc --noEmit"
   },
