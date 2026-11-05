@@ -1,0 +1,8 @@
+{
+  "name": "Mateo's Learning",
+  "description": "Mateo's Learning Hub - Comprehensive student suite featuring AI Camera Exam & Homework Scanner, Practice Exam Simulators (SAT, AP, Finals), Interactive Periodic Table & Molar Mass Solver, 25+ working arcade games, movies & YouTube cinema, Spotify Web Player, DuckDuckGo & Google Navigator, and about:blank stealth cloaking.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
