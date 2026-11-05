@@ -13,7 +13,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   </head>
   <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div id="root">
+      <div style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #070913; color: #f1f5f9; font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 24px;">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #9333ea); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; margin-bottom: 16px; box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);">
+          M
+        </div>
+        <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 8px 0; color: #ffffff;">Loading Mateo's Learning Hub...</h2>
+        <p style="font-size: 13px; color: #94a3b8; max-width: 420px; margin: 0 0 16px 0; line-height: 1.5;">
+          Initializing AI Camera Exam Scanner, 25+ Games, and Student Portal.
+        </p>
+        <div style="width: 36px; height: 36px; border: 3px solid rgba(99, 102, 241, 0.2); border-top-color: #6366f1; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      </div>
+    </div>
+    <script type="module" src="./src/main.jsx"></script>
   </body>
 </html>
