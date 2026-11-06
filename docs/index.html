@@ -28,5 +28,20 @@
         <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
       </div>
     </div>
+    <script>
+      // Fallback for static GitHub Pages root deployment
+      if (location.hostname.includes('github.io')) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = './assets/index.css';
+        document.head.appendChild(link);
+
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.crossOrigin = 'anonymous';
+        s.src = './assets/index.js';
+        document.body.appendChild(s);
+      }
+    </script>
   </body>
 </html>

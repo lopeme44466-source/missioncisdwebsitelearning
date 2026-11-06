@@ -26,31 +26,21 @@
         <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
       </div>
     </div>
-    <link rel="stylesheet" crossorigin href="./assets/index.css" id="prod-css" onerror="this.remove()">
-    <script type="module">
-      // Adaptive loader for both dev server and static GitHub Pages hosting
-      const isDevHost = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.includes('run.app');
+    <script>
+      // Fallback for static GitHub Pages root deployment
+      if (location.hostname.includes('github.io')) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = './assets/index.css';
+        document.head.appendChild(link);
 
-      function loadProdBundle() {
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.crossOrigin = 'anonymous';
-        script.src = './assets/index.js';
-        script.onerror = function() {
-          console.error('Failed to load production bundle from ./assets/index.js');
-        };
-        document.body.appendChild(script);
-      }
-
-      if (isDevHost) {
-        import('./src/main.jsx').catch(function(err) {
-          console.warn('Dev module load failed, falling back to production bundle:', err);
-          loadProdBundle();
-        });
-      } else {
-        // Direct production execution for GitHub Pages static hosting
-        loadProdBundle();
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.crossOrigin = 'anonymous';
+        s.src = './assets/index.js';
+        document.body.appendChild(s);
       }
     </script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
