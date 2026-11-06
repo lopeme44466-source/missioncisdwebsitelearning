@@ -23,6 +23,15 @@ import {
 } from 'lucide-react';
 import { openAboutBlankCloak } from '../utils/cloak';
 
+export function extractYouTubeId(urlOrId) {
+  if (!urlOrId) return null;
+  const str = urlOrId.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(str)) return str;
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = str.match(regex);
+  return match && match[1] ? match[1] : null;
+}
+
 const QUICK_BOOKMARKS = [
   {
     name: 'DuckDuckGo',
@@ -163,6 +172,12 @@ export default function WebNavigator({ initialUrl, onClearInitialUrl }) {
       }
     }
 
+    // If YouTube URL or ID, convert to embed for iframe compatibility
+    const ytId = extractYouTubeId(target);
+    if (ytId) {
+      target = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+    }
+
     saveToRecent(target);
     setTabs((prev) =>
       prev.map((t) =>
@@ -227,6 +242,11 @@ export default function WebNavigator({ initialUrl, onClearInitialUrl }) {
     if (!target.startsWith('http://') && !target.startsWith('https://')) {
       target = 'https://' + target;
     }
+    const ytId = extractYouTubeId(target);
+    if (ytId) {
+      target = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+    }
+
     saveToRecent(target);
 
     if (mode === 'blank') {

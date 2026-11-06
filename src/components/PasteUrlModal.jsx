@@ -12,10 +12,21 @@ import {
   AlertCircle,
   Shield,
   ArrowRight,
+  Youtube,
+  Play,
 } from 'lucide-react';
 import { openAboutBlankCloak } from '../utils/cloak';
 
-export default function PasteUrlModal({ isOpen, onClose, onOpenInBrowser }) {
+export function extractYouTubeId(urlOrId) {
+  if (!urlOrId) return null;
+  const str = urlOrId.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(str)) return str;
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = str.match(regex);
+  return match && match[1] ? match[1] : null;
+}
+
+export default function PasteUrlModal({ isOpen, onClose, onOpenInBrowser, onOpenInYouTube }) {
   const [url, setUrl] = useState('');
   const [recentUrls, setRecentUrls] = useState([]);
   const [copiedSuccess, setCopiedSuccess] = useState(false);
@@ -81,18 +92,33 @@ export default function PasteUrlModal({ isOpen, onClose, onOpenInBrowser }) {
 
   const handleOpenBlank = () => {
     setErrorMessage('');
-    const target = sanitizeUrl(url);
+    const ytId = extractYouTubeId(url);
+    const target = ytId ? `https://www.youtube.com/embed/${ytId}?autoplay=1` : sanitizeUrl(url);
     if (!target) {
       setErrorMessage('Please enter or paste a valid web address first!');
       return;
     }
-    saveToHistory(target);
+    saveToHistory(sanitizeUrl(url));
     const success = openAboutBlankCloak(target, 'mission-cisd');
     if (success) {
       onClose();
     } else {
       setErrorMessage('Pop-up was blocked by your browser! Please allow popups for about:blank stealth.');
     }
+  };
+
+  const handlePlayYouTube = () => {
+    setErrorMessage('');
+    const id = extractYouTubeId(url);
+    if (!id) {
+      setErrorMessage('Could not extract YouTube video ID from pasted URL.');
+      return;
+    }
+    saveToHistory(sanitizeUrl(url));
+    if (onOpenInYouTube) {
+      onOpenInYouTube(id);
+    }
+    onClose();
   };
 
   const handleOpenInAppBrowser = () => {
@@ -212,6 +238,30 @@ export default function PasteUrlModal({ isOpen, onClose, onOpenInBrowser }) {
                 <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 <span>{errorMessage}</span>
               </p>
+            )}
+
+            {/* YouTube Auto-Detection Banner */}
+            {extractYouTubeId(url) && (
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-red-950/60 via-slate-900 to-red-950/60 border border-red-500/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md animate-in fade-in">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-2 rounded-xl bg-red-600 text-white shadow-sm shrink-0">
+                    <Youtube className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-white text-xs">YouTube Video Detected!</p>
+                    <p className="text-[11px] text-red-300 font-mono">Video ID: {extractYouTubeId(url)}</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handlePlayYouTube}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md shadow-red-600/30"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>Play in YouTube Cinema</span>
+                </button>
+              </div>
             )}
           </div>
 

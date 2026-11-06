@@ -61,6 +61,7 @@ export default function App() {
   const [showPanicOverlay, setShowPanicOverlay] = useState(false);
   const [showPasteModal, setShowPasteModal] = useState(false);
   const [pendingBrowserUrl, setPendingBrowserUrl] = useState(null);
+  const [pendingYtId, setPendingYtId] = useState(null);
   const [currentTheme, setCurrentTheme] = useState('nebula');
 
   const { isPlaying, togglePlay, currentTrack, volume, setVolume, nextTrack } = useMusic();
@@ -175,6 +176,16 @@ export default function App() {
               <Compass className="w-3.5 h-3.5 text-cyan-400" />
               <span>Browser</span>
             </button>
+
+            <button
+              onClick={() => setCurrentView('movies-videos')}
+              className={`px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 ${
+                currentView === 'movies-videos' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              <Film className="w-3.5 h-3.5 text-rose-400" />
+              <span>YouTube / Movies</span>
+            </button>
           </nav>
 
           {/* Right Action Tools */}
@@ -245,7 +256,12 @@ export default function App() {
           />
         )}
 
-        {currentView === 'movies-videos' && <MoviesAndVideosApp />}
+        {currentView === 'movies-videos' && (
+          <MoviesAndVideosApp
+            initialYtId={pendingYtId}
+            onClearInitialYtId={() => setPendingYtId(null)}
+          />
+        )}
 
         {currentView === 'spotify-player' && <SpotifyApp />}
 
@@ -324,6 +340,10 @@ export default function App() {
         onOpenInBrowser={(url) => {
           setPendingBrowserUrl(url);
           setCurrentView('web-navigator');
+        }}
+        onOpenInYouTube={(ytId) => {
+          setPendingYtId(ytId);
+          setCurrentView('movies-videos');
         }}
       />
     </div>
