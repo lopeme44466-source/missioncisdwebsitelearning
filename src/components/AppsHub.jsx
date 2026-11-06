@@ -16,10 +16,21 @@ import {
   ExternalLink,
   Search,
   Zap,
+  Link2,
 } from 'lucide-react';
 import { openAboutBlankCloak } from '../utils/cloak';
 
 export const ALL_APPS = [
+  {
+    id: 'paste-url',
+    title: 'Paste Your URL & Stealth Unblocker',
+    category: 'Browser',
+    icon: Link2,
+    color: 'from-cyan-500 to-blue-600',
+    description: 'Paste any custom website, game link, or video stream to launch with stealth about:blank cloaking or inside the browser.',
+    badge: 'Paste Any URL',
+    highlight: true,
+  },
   {
     id: 'camera-exam',
     title: 'AI Camera Exam & Homework Scanner',
@@ -138,7 +149,7 @@ export const ALL_APPS = [
   },
 ];
 
-export default function AppsHub({ onLaunchApp }) {
+export default function AppsHub({ onLaunchApp, onOpenPasteModal }) {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -174,10 +185,18 @@ export default function AppsHub({ onLaunchApp }) {
 
           <div className="flex flex-wrap md:flex-col gap-2 shrink-0">
             <button
-              onClick={() => onLaunchApp('camera-exam')}
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-indigo-600/30 transition cursor-pointer"
+              onClick={onOpenPasteModal}
+              className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-cyan-600/30 transition cursor-pointer"
             >
-              <Camera className="w-4 h-4" />
+              <Link2 className="w-4 h-4" />
+              <span>Paste Your URL</span>
+            </button>
+
+            <button
+              onClick={() => onLaunchApp('camera-exam')}
+              className="px-5 py-2.5 bg-indigo-600/50 hover:bg-indigo-600 text-white font-bold rounded-xl text-xs flex items-center space-x-2 border border-indigo-500/40 transition cursor-pointer"
+            >
+              <Camera className="w-4 h-4 text-amber-300" />
               <span>AI Camera Scanner</span>
             </button>
 
@@ -259,10 +278,16 @@ export default function AppsHub({ onLaunchApp }) {
 
               <div className="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
                 <button
-                  onClick={() => onLaunchApp(app.id)}
+                  onClick={() => {
+                    if (app.id === 'paste-url' && onOpenPasteModal) {
+                      onOpenPasteModal();
+                    } else {
+                      onLaunchApp(app.id);
+                    }
+                  }}
                   className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold rounded-xl text-xs transition cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                 >
-                  <span>Launch App</span>
+                  <span>{app.id === 'paste-url' ? 'Paste & Launch' : 'Launch App'}</span>
                 </button>
 
                 <button

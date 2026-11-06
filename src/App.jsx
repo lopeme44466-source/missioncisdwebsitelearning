@@ -18,6 +18,7 @@ import {
   Play,
   Pause,
   SkipForward,
+  Link2,
 } from 'lucide-react';
 
 import AppsHub from './components/AppsHub';
@@ -25,6 +26,7 @@ import WebNavigator from './components/WebNavigator';
 import MissionCisdView from './components/MissionCisdView';
 import CloakModal from './components/CloakModal';
 import PanicOverlay from './components/PanicOverlay';
+import PasteUrlModal from './components/PasteUrlModal';
 
 // Apps
 import AiCameraExamApp from './components/apps/AiCameraExamApp';
@@ -57,6 +59,8 @@ export default function App() {
   const [isDisguised, setIsDisguised] = useState(false);
   const [showCloakModal, setShowCloakModal] = useState(false);
   const [showPanicOverlay, setShowPanicOverlay] = useState(false);
+  const [showPasteModal, setShowPasteModal] = useState(false);
+  const [pendingBrowserUrl, setPendingBrowserUrl] = useState(null);
   const [currentTheme, setCurrentTheme] = useState('nebula');
 
   const { isPlaying, togglePlay, currentTrack, volume, setVolume, nextTrack } = useMusic();
@@ -175,6 +179,16 @@ export default function App() {
 
           {/* Right Action Tools */}
           <div className="flex items-center space-x-2">
+            {/* Quick Paste URL Button */}
+            <button
+              onClick={() => setShowPasteModal(true)}
+              className="px-3 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              title="Paste any website, game, or video URL"
+            >
+              <Link2 className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="hidden sm:inline">Paste URL</span>
+            </button>
+
             {/* Global about:blank Stealth Button */}
             <button
               onClick={() => openAboutBlankCloak(window.location.href, 'mission-cisd')}
@@ -209,7 +223,12 @@ export default function App() {
 
       {/* Main App Content Viewport */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col">
-        {currentView === 'hub' && <AppsHub onLaunchApp={(appId) => setCurrentView(appId)} />}
+        {currentView === 'hub' && (
+          <AppsHub
+            onLaunchApp={(appId) => setCurrentView(appId)}
+            onOpenPasteModal={() => setShowPasteModal(true)}
+          />
+        )}
 
         {currentView === 'camera-exam' && <AiCameraExamApp />}
 
@@ -219,7 +238,12 @@ export default function App() {
 
         {currentView === 'games-arcade' && <GamesArcadeApp />}
 
-        {currentView === 'web-navigator' && <WebNavigator />}
+        {currentView === 'web-navigator' && (
+          <WebNavigator
+            initialUrl={pendingBrowserUrl}
+            onClearInitialUrl={() => setPendingBrowserUrl(null)}
+          />
+        )}
 
         {currentView === 'movies-videos' && <MoviesAndVideosApp />}
 
@@ -292,6 +316,16 @@ export default function App() {
 
       {/* Cloak Setup Modal */}
       <CloakModal isOpen={showCloakModal} onClose={() => setShowCloakModal(false)} />
+
+      {/* Paste Your URL Modal */}
+      <PasteUrlModal
+        isOpen={showPasteModal}
+        onClose={() => setShowPasteModal(false)}
+        onOpenInBrowser={(url) => {
+          setPendingBrowserUrl(url);
+          setCurrentView('web-navigator');
+        }}
+      />
     </div>
   );
 }
